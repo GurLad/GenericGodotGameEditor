@@ -65,14 +65,14 @@ public partial class GameDataBrowser : VBoxContainer
         }
     }
 
-    public void Init(Control gameEditorPanel, PackedScene sceneDataLoader)
+    public void Init(Control gameEditorPanel, PackedScene sceneDataEditor)
     {
         // Replace the editor with self
         this.gameEditorPanel = gameEditorPanel;
         gameEditorPanel.GetParent().AddChild(this);
         gameEditorPanel.Visible = false;
         // Create a new loader
-        dataLoader = sceneDataLoader.Instantiate<AGameDataLoader>();
+        dataLoader = sceneDataEditor.Instantiate<GameDataEditor>().DataLoader;
         loaderContainer.AddChild(dataLoader);
         dataLoader.OnDirty += () => dirty = true;
         // Init data

@@ -35,6 +35,7 @@ public static class FileSystem
                 {
                     // Create the file
                     using FileAccess temp = FileAccess.Open(GAME_DATA_DIRECTORY_FILE, FileAccess.ModeFlags.Write);
+                    temp.StoreString("./");
                 }
                 using FileAccess dataFile = FileAccess.Open(GAME_DATA_DIRECTORY_FILE, FileAccess.ModeFlags.Read);
                 _gameDataDirectory = dataFile.GetAsText();

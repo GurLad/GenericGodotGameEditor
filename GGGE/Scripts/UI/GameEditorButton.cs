@@ -4,7 +4,7 @@ using System;
 public partial class GameEditorButton : BaseButton
 {
     [Export]
-    private PackedScene SceneDataLoader;
+    private PackedScene SceneDataEditor;
     [Export]
     private PackedScene SceneGameDataBrowser;
     [Export]
@@ -13,6 +13,6 @@ public partial class GameEditorButton : BaseButton
     public override void _Ready()
     {
         base._Ready();
-        Pressed += () => SceneGameDataBrowser.Instantiate<GameDataBrowser>().Init(GameEditorPanel, SceneDataLoader);
+        Pressed += () => SceneGameDataBrowser.Instantiate<GameDataBrowser>().Init(GameEditorPanel, SceneDataEditor);
     }
 }

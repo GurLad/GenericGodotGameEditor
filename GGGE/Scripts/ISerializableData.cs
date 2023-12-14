@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public interface IGameData
+public interface ISerializableData
 {
     public string Save();
 

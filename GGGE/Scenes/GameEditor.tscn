@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://dmntwlonxuvb5"]
 
 [ext_resource type="Script" path="res://GGGE/Scripts/UI/GameEditorButton.cs" id="1_jf8me"]
-[ext_resource type="PackedScene" uid="uid://cmp7ydy3hp5i1" path="res://GGGE/Scenes/InputBox.tscn" id="2_bjt02"]
+[ext_resource type="PackedScene" uid="uid://de2by0q3qodmr" path="res://Sample/Scenes/SampleEditor.tscn" id="2_dxiby"]
 [ext_resource type="PackedScene" uid="uid://clp8spdsqe1pl" path="res://GGGE/Scenes/GameDataBrowser.tscn" id="3_ryvdl"]
 
 [node name="GameEditor" type="PanelContainer"]
@@ -29,6 +29,6 @@ autowrap_mode = 0
 layout_mode = 2
 text = "Sample Editor"
 script = ExtResource("1_jf8me")
-SceneDataLoader = ExtResource("2_bjt02")
+SceneDataEditor = ExtResource("2_dxiby")
 SceneGameDataBrowser = ExtResource("3_ryvdl")
 GameEditorPanel = NodePath("../../..")

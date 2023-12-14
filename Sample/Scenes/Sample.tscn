@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://cli72tcmi7mup"]
+
+[ext_resource type="Script" path="res://Sample/Scripts/Sample.cs" id="1_1rglo"]
+[ext_resource type="PackedScene" uid="uid://d2rceob1nse1b" path="res://Sample/Scenes/SampleLoader.tscn" id="2_0ciih"]
+
+[node name="Sample" type="Node2D" node_paths=PackedStringArray("loader")]
+script = ExtResource("1_1rglo")
+name = "Test"
+loader = NodePath("SampleLoader")
+
+[node name="SampleLoader" parent="." instance=ExtResource("2_0ciih")]

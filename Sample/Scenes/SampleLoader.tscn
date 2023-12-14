@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=3 uid="uid://d2rceob1nse1b"]
+
+[ext_resource type="Script" path="res://Sample/Scripts/SampleLoader.cs" id="1_d3lya"]
+[ext_resource type="Texture2D" uid="uid://b36dn21h0jp1l" path="res://icon.svg" id="1_jcokg"]
+[ext_resource type="Script" path="res://Sample/Scripts/SampleSerializableData.cs" id="3_w7mqr"]
+
+[node name="SampleLoader" type="Node2D" node_paths=PackedStringArray("Data", "Sprite")]
+script = ExtResource("1_d3lya")
+Data = NodePath("Data")
+Sprite = NodePath("Sprite2D")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_jcokg")
+
+[node name="Label" type="Label" parent="."]
+offset_left = -66.0
+offset_top = 73.0
+offset_right = 67.0
+offset_bottom = 96.0
+text = "42"
+horizontal_alignment = 1
+
+[node name="Data" type="Node" parent="." node_paths=PackedStringArray("numberLabel")]
+script = ExtResource("3_w7mqr")
+numberLabel = NodePath("../Label")

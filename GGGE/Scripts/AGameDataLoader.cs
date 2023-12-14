@@ -6,12 +6,15 @@ using System.Linq;
 public abstract partial class AGameDataLoader : Node
 {
     public abstract string DataFolder { get; }
-    protected abstract Dictionary<string, IGameData> gameDatas { get; }
+    protected abstract Dictionary<string, ISerializableData> gameDatas { get; }
     protected abstract Dictionary<string, Sprite2D> sprites { get; }
     protected virtual string iconKey => "";
 
     [Signal]
     public delegate void OnDirtyEventHandler();
+
+    [Signal]
+    public delegate void OnExternalChangeEventHandler();
 
     public void Load(string name, string folder = "")
     {
@@ -39,6 +42,7 @@ public abstract partial class AGameDataLoader : Node
                 sprite.Value.Texture = new Texture2D();
             }
         }
+        EmitSignal(SignalName.OnExternalChange);
     }
 
     public void Save(string name, string folder = "")
@@ -63,6 +67,7 @@ public abstract partial class AGameDataLoader : Node
     {
         gameDatas.Values.ToList().ForEach(a => a.Clear());
         sprites.Values.ToList().ForEach(a => a.Texture = new Texture2D());
+        EmitSignal(SignalName.OnExternalChange);
     }
 
     public Texture2D GetIcon(string name, string folder = "")
