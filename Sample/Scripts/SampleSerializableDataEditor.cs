@@ -16,8 +16,8 @@ public partial class SampleSerializableDataEditor : ASerializableDataEditor
     public override void _Ready()
     {
         base._Ready();
-        descriptionEditor.TextChanged += () => data.Description = descriptionEditor.Text;
-        numberEditor.ValueChanged += (i) => data.Number = (int)i;
+        descriptionEditor.TextChanged += () => { data.Description = descriptionEditor.Text; SetDirty(); };
+        numberEditor.ValueChanged += (i) => { data.Number = (int)i; SetDirty(); };
         ConnectToLoader(loader);
     }
 

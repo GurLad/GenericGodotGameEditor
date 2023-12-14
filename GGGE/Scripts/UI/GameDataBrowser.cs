@@ -71,9 +71,10 @@ public partial class GameDataBrowser : VBoxContainer
         this.gameEditorPanel = gameEditorPanel;
         gameEditorPanel.GetParent().AddChild(this);
         gameEditorPanel.Visible = false;
-        // Create a new loader
-        dataLoader = sceneDataEditor.Instantiate<GameDataEditor>().DataLoader;
-        loaderContainer.AddChild(dataLoader);
+        // Create a new editor
+        GameDataEditor dataEditor = sceneDataEditor.Instantiate<GameDataEditor>();
+        loaderContainer.AddChild(dataEditor);
+        dataLoader = dataEditor.DataLoader;
         dataLoader.OnDirty += () => dirty = true;
         // Init data
         UpdateDataList();
@@ -95,9 +96,9 @@ public partial class GameDataBrowser : VBoxContainer
         dataList.ItemSelected += (i) => deleteButton.Disabled = false;
     }
 
-    public override void _UnhandledKeyInput(InputEvent @event)
+    public override void _Input(InputEvent @event)
     {
-        base._UnhandledKeyInput(@event);
+        base._Input(@event);
         if (@event is InputEventKey keyEvent && keyEvent.Pressed && !keyEvent.Echo && keyEvent.CtrlPressed)
         {
             switch (keyEvent.Keycode)
@@ -163,6 +164,7 @@ public partial class GameDataBrowser : VBoxContainer
         {
             selected = name.Trim();
             dataLoader.Load(name, folderAddition);
+            dirty = false;
         }
     }
 
@@ -197,6 +199,7 @@ public partial class GameDataBrowser : VBoxContainer
         }
         selected = null;
         dataLoader.New();
+        dirty = false;
     }
 
     private void NewFolder()

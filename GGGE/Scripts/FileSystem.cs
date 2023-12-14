@@ -15,6 +15,7 @@ public static class FileSystem
     private enum DirectorySavingMode { Marker, Suffix, Auto }
     // Consts
     public const char SEPERATOR = '\\';
+    private const string DEFAULT_DIRECTORY = "./GameData";
     private const string GAME_DATA_DIRECTORY_FILE = "user://GameDataDirectory.data";
     private const DirectorySavingMode DIRECTORY_SAVING_MODE = DirectorySavingMode.Marker;
     // Properties
@@ -35,7 +36,11 @@ public static class FileSystem
                 {
                     // Create the file
                     using FileAccess temp = FileAccess.Open(GAME_DATA_DIRECTORY_FILE, FileAccess.ModeFlags.Write);
-                    temp.StoreString("./");
+                    temp.StoreString(DEFAULT_DIRECTORY);
+                    // Create the directory
+                    DirAccess.MakeDirRecursiveAbsolute(DEFAULT_DIRECTORY);
+                    // Add a .gdignore file, just in case
+                    using FileAccess temp2 = FileAccess.Open(DEFAULT_DIRECTORY + SEPERATOR + ".gdignore", FileAccess.ModeFlags.Write);
                 }
                 using FileAccess dataFile = FileAccess.Open(GAME_DATA_DIRECTORY_FILE, FileAccess.ModeFlags.Read);
                 _gameDataDirectory = dataFile.GetAsText();

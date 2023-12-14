@@ -10,6 +10,7 @@ public abstract partial class ASerializableDataEditor : Node
     {
         OnDirty += () => gameDataLoader.EmitSignal(AGameDataLoader.SignalName.OnDirty);
         gameDataLoader.OnExternalChange += Refresh;
+        Refresh();
     }
 
     protected void SetDirty() => EmitSignal(SignalName.OnDirty);

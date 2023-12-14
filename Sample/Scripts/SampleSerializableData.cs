@@ -1,6 +1,5 @@
 using Godot;
 using System;
-using System.Text.Json;
 
 public partial class SampleSerializableData : Node, ISerializableData
 {
@@ -13,14 +12,14 @@ public partial class SampleSerializableData : Node, ISerializableData
 
     public string Save()
     {
-        return JsonSerializer.Serialize(this, typeof(SampleSerializableData), new JsonSerializerOptions { WriteIndented = true });
+        return Json.Stringify(new Godot.Collections.Array() { Description, Number });
     }
 
     public void Load(string data)
     {
-        SampleSerializableData newData = (SampleSerializableData)JsonSerializer.Deserialize(data, typeof(SampleSerializableData));
-        Description = newData.Description;
-        Number = newData.Number;
+        var newData = Json.ParseString(data).AsGodotArray();
+        Description = newData[0].AsString();
+        Number = newData[1].AsInt32();
     }
 
     public void Clear()

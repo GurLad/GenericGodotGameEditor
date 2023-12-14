@@ -4,19 +4,21 @@
 [ext_resource type="PackedScene" uid="uid://h61y4co48an" path="res://Sample/Scenes/SampleSerializableDataEditor.tscn" id="2_3pfpk"]
 [ext_resource type="PackedScene" uid="uid://d2rceob1nse1b" path="res://Sample/Scenes/SampleLoader.tscn" id="3_wgfac"]
 
-[node name="SampleEditor" type="PanelContainer"]
+[node name="SampleEditor" type="PanelContainer" node_paths=PackedStringArray("DataLoader")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_lisp0")
+DataLoader = NodePath("HBoxContainer/SubViewportContainer/SubViewport/SampleLoader")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="SampleSerializableDataEditor" parent="HBoxContainer" instance=ExtResource("2_3pfpk")]
+[node name="SampleSerializableDataEditor" parent="HBoxContainer" node_paths=PackedStringArray("loader") instance=ExtResource("2_3pfpk")]
 layout_mode = 2
+loader = NodePath("../SubViewportContainer/SubViewport/SampleLoader")
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="HBoxContainer"]
 layout_mode = 2
@@ -24,7 +26,9 @@ size_flags_vertical = 4
 
 [node name="SubViewport" type="SubViewport" parent="HBoxContainer/SubViewportContainer"]
 transparent_bg = true
+handle_input_locally = false
 size = Vector2i(200, 200)
+render_target_update_mode = 4
 
 [node name="SampleLoader" parent="HBoxContainer/SubViewportContainer/SubViewport" instance=ExtResource("3_wgfac")]
 position = Vector2(100, 100)
