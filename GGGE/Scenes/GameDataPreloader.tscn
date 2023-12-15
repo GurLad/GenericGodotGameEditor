@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://dweyph1t32etn"]
+
+[ext_resource type="Script" path="res://GGGE/Scripts/GameDataPreloader.cs" id="1_cbn4d"]
+[ext_resource type="PackedScene" uid="uid://d2rceob1nse1b" path="res://Sample/Scenes/SampleLoader.tscn" id="2_g3t3k"]
+
+[node name="GameDataPreloader" type="Node"]
+script = ExtResource("1_cbn4d")
+sceneDataLoaders = Array[PackedScene]([ExtResource("2_g3t3k")])

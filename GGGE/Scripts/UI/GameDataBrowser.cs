@@ -76,6 +76,8 @@ public partial class GameDataBrowser : VBoxContainer
         loaderContainer.AddChild(dataEditor);
         dataLoader = dataEditor.DataLoader;
         dataLoader.OnDirty += () => dirty = true;
+        // Invalidate previous data
+        GameDataPreloader.Current?.InvalidateFolder(dataLoader.DataFolder);
         // Init data
         UpdateDataList();
         selected = null;
@@ -220,6 +222,7 @@ public partial class GameDataBrowser : VBoxContainer
 
     private void Exit()
     {
+        GameDataPreloader.Current?.ReloadFolder(dataLoader.DataFolder);
         gameEditorPanel.Visible = true;
         QueueFree();
     }

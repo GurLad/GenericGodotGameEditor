@@ -9,6 +9,19 @@ public abstract partial class AGameDataLoader : Node
     protected abstract Dictionary<string, ISerializableData> gameDatas { get; }
     protected abstract Dictionary<string, Sprite2D> sprites { get; }
     protected virtual string iconKey => "";
+    public bool Visible
+    {
+        set
+        {
+            GetChildren().ToList().ForEach(a =>
+            {
+                if (a.HasMethod("set_visible"))
+                {
+                    a.Call("set_visible", value);
+                }
+            });
+        }
+    }
 
     [Signal]
     public delegate void OnDirtyEventHandler();
@@ -16,8 +29,14 @@ public abstract partial class AGameDataLoader : Node
     [Signal]
     public delegate void OnExternalChangeEventHandler();
 
-    public void Load(string name, string folder = "")
+    public void Load(string name, string folder)
     {
+        var preloadedData = GameDataPreloader.Current?.GetRecord(DataFolder, name, folder);
+        if (preloadedData != null)
+        {
+            LoadFromRecord(preloadedData);
+            return;
+        }
         string folderPath = this.GetFolderPath(name, folder, false);
         foreach (var gameData in gameDatas)
         {
@@ -45,7 +64,32 @@ public abstract partial class AGameDataLoader : Node
         EmitSignal(SignalName.OnExternalChange);
     }
 
-    public void Save(string name, string folder = "")
+    public void Load(string name)
+    {
+        var preloadedData = GameDataPreloader.Current?.GetRecord(DataFolder, name);
+        if (preloadedData != null)
+        {
+            LoadFromRecord(preloadedData);
+        }
+        else
+        {
+            throw new Exception(name + " not found!");
+        }
+    }
+
+    private void LoadFromRecord(GameDataPreloader.GameDataRecord record)
+    {
+        foreach (var gameData in gameDatas)
+        {
+            gameData.Value.Load(record.GameDatas[gameData.Key]);
+        }
+        foreach (var sprite in sprites)
+        {
+            sprite.Value.Texture = ImageTexture.CreateFromImage(record.Sprites[sprite.Key]);
+        }
+    }
+
+    public void Save(string name, string folder)
     {
         string folderPath = this.GetFolderPath(name, folder, true);
         foreach (var gameData in gameDatas)
@@ -61,6 +105,20 @@ public abstract partial class AGameDataLoader : Node
         {
             sprite.Value.Texture?.GetImage()?.SavePng(folderPath + FileSystem.SEPERATOR + sprite.Key + ".png");
         }
+    }
+
+    public GameDataPreloader.GameDataRecord SaveToRecord()
+    {
+        GameDataPreloader.GameDataRecord record = new GameDataPreloader.GameDataRecord(new Dictionary<string, string>(), new Dictionary<string, Image>());
+        foreach (var gameData in gameDatas)
+        {
+            record.GameDatas.Add(gameData.Key, gameData.Value.Save());
+        }
+        foreach (var sprite in sprites)
+        {
+            record.Sprites.Add(sprite.Key, sprite.Value.Texture?.GetImage());
+        }
+        return record;
     }
 
     public void New()

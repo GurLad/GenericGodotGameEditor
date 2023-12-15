@@ -31,3 +31,4 @@ text = "Number"
 [node name="SpinBox" type="SpinBox" parent="HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+min_value = -1.0
