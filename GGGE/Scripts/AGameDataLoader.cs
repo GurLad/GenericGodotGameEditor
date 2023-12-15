@@ -83,4 +83,11 @@ public abstract partial class AGameDataLoader : Node
             return new Texture2D();
         }
     }
+
+    public T GetData<T>(string key) where T : ISerializableData
+    {
+        return gameDatas.ContainsKey(key) ? (gameDatas[key] is T result ? result :
+            throw new Exception("Type mismatch! " + key + " isn't " + typeof(T))) :
+            throw new Exception("No key! " + key);
+    }
 }

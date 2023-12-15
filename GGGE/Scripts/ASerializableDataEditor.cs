@@ -1,15 +1,26 @@
 using Godot;
 using System;
 
-public abstract partial class ASerializableDataEditor : Node
+public abstract partial class ASerializableDataEditor<T> : Node where T : ISerializableData
 {
+    // Exports
+    [Export]
+    private string dataKey;
+    [Export]
+    private AGameDataLoader loader;
+    // Properties
+    private T _data;
+    protected T data => _data;
+
     [Signal]
     public delegate void OnDirtyEventHandler();
 
-    protected void ConnectToLoader(AGameDataLoader gameDataLoader)
+    public override void _Ready()
     {
-        OnDirty += () => gameDataLoader.EmitSignal(AGameDataLoader.SignalName.OnDirty);
-        gameDataLoader.OnExternalChange += Refresh;
+        base._Ready();
+        _data = loader.GetData<T>(dataKey);
+        OnDirty += () => loader.EmitSignal(AGameDataLoader.SignalName.OnDirty);
+        loader.OnExternalChange += Refresh;
         Refresh();
     }
 

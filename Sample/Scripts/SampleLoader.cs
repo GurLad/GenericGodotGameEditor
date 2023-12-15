@@ -14,4 +14,6 @@ public partial class SampleLoader : AGameDataLoader
     protected override Dictionary<string, ISerializableData> gameDatas => new Dictionary<string, ISerializableData>() { { "SampleJson", Data } };
 
     protected override Dictionary<string, Sprite2D> sprites => new Dictionary<string, Sprite2D>() { { "SampleSprite", Sprite } };
+
+    protected override string iconKey => "SampleSprite";
 }

@@ -18,6 +18,7 @@ layout_mode = 2
 
 [node name="SampleSerializableDataEditor" parent="HBoxContainer" node_paths=PackedStringArray("loader") instance=ExtResource("2_3pfpk")]
 layout_mode = 2
+dataKey = "SampleJson"
 loader = NodePath("../SubViewportContainer/SubViewport/SampleLoader")
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="HBoxContainer"]

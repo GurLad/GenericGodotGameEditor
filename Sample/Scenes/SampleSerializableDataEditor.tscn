@@ -19,6 +19,7 @@ text = "Description"
 [node name="TextEdit" type="TextEdit" parent="."]
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
+wrap_mode = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
