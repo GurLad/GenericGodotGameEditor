@@ -2,6 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using GGE.Internal;
 
 public static class FileSystem
 {
@@ -47,6 +48,40 @@ public static class FileSystem
             }
             return _gameDataDirectory;
         }
+    }
+
+    public static void CreateDataFolder(string dataFolder)
+    {
+        DirAccess.MakeDirRecursiveAbsolute(GameDataDirectory + SEPERATOR + dataFolder);
+    }
+
+    public static string LoadTextFile(string path, string extension = ".json")
+    {
+        using var file = FileAccess.Open(path + extension, FileAccess.ModeFlags.Read);
+        return file?.GetAsText();
+    }
+
+    private static Image LoadImageFile(string path, string extension = ".png")
+    {
+        if (FileAccess.FileExists(path + extension))
+        {
+            return Image.LoadFromFile(path + extension);
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    public static Texture2D LoadTextureFile(string path, string extension = ".png")
+    {
+        Image img = LoadImageFile(path, extension);
+        return img != null ? ImageTexture.CreateFromImage(img) : null;
+    }
+
+    public static List<Texture2D> LoadAnimatedTextureFile(string path, int numFrames, string extension = ".png")
+    {
+        return LoadImageFile(path, extension)?.Split(numFrames) ?? new List<Texture2D>();
     }
 
     public static string GetFolderPath(this AGameDataLoader gameDataLoader, string name, string folder, bool save)

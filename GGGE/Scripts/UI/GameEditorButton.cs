@@ -1,18 +1,22 @@
 using Godot;
 using System;
 
-public partial class GameEditorButton : BaseButton
+namespace GGE.Internal
 {
-    [Export]
-    private PackedScene SceneDataEditor;
-    [Export]
-    private PackedScene SceneGameDataBrowser;
-    [Export]
-    private Control GameEditorPanel;
-
-    public override void _Ready()
+    public partial class GameEditorButton : BaseButton
     {
-        base._Ready();
-        Pressed += () => SceneGameDataBrowser.Instantiate<GameDataBrowser>().Init(GameEditorPanel, SceneDataEditor);
+        [Export]
+        private PackedScene SceneDataEditor;
+        [ExportCategory("Shared")]
+        [Export]
+        private PackedScene SceneGameDataBrowser;
+        [Export]
+        private Control GameEditorPanel;
+
+        public override void _Ready()
+        {
+            base._Ready();
+            Pressed += () => SceneGameDataBrowser.Instantiate<GameDataBrowser>().Init(GameEditorPanel, SceneDataEditor);
+        }
     }
 }

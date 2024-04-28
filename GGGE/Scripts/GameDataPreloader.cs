@@ -16,9 +16,9 @@ public partial class GameDataPreloader : Node
     public override void _Ready()
     {
         base._Ready();
+        Current = this;
         dataLoaders = sceneDataLoaders.ToList().ConvertAll(a => a.Instantiate<AGameDataLoader>());
         dataLoaders.ForEach(a => { a.Visible = false; AddChild(a); LoadAll(a); });
-        Current = this;
     }
 
     public GameDataRecord GetRecord(string dataFolder, string name, string folderAddition)
@@ -55,6 +55,16 @@ public partial class GameDataPreloader : Node
         LoadAll(dataLoaders.Find(a => a.DataFolder == dataFolder));
     }
 
+    public List<string> GetAllNames(string dataFolder)
+    {
+        return preloadedData[dataFolder].ConvertAll(a => a.Item1);
+    }
+
+    public Texture2D GetIcon(string dataFolder, string dataName)
+    {
+        return dataLoaders.Find(a => a.DataFolder == dataFolder)?.GetIcon(dataName);
+    }
+
     private void LoadAll(AGameDataLoader template)
     {
         string folderPath = FileSystem.GameDataDirectory + FileSystem.SEPERATOR + template.DataFolder;
@@ -74,6 +84,7 @@ public partial class GameDataPreloader : Node
             });
         }
 
+        FileSystem.CreateDataFolder(template.DataFolder);
         if (preloadedData.ContainsKey(template.DataFolder))
         {
             preloadedData[template.DataFolder].Clear();
@@ -87,7 +98,6 @@ public partial class GameDataPreloader : Node
 
     public record GameDataRecord
     (
-        Dictionary<string, string> GameDatas,
-        Dictionary<string, Image> Sprites
+        List<(string, object)> Records
     ) { }
 }

@@ -1,7 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://clp8spdsqe1pl"]
+[gd_scene load_steps=5 format=3 uid="uid://clp8spdsqe1pl"]
 
+[ext_resource type="Theme" uid="uid://d2ehmxf06kkyu" path="res://EditorTheme.tres" id="1_0bw8b"]
 [ext_resource type="Script" path="res://GGGE/Scripts/UI/GameDataBrowser.cs" id="1_l7aig"]
 [ext_resource type="Texture2D" uid="uid://dx688fvtik7a" path="res://GGGE/Sprites/FolderIcon.png" id="3_8d6l7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5b22l"]
 
 [node name="GameDataBrowser" type="VBoxContainer" node_paths=PackedStringArray("dataList", "saveButton", "saveAsButton", "newButton", "deleteButton", "newFolderButton", "backButton", "exitButton", "title", "loaderContainer")]
 anchors_preset = 15
@@ -9,14 +12,15 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_0bw8b")
 script = ExtResource("1_l7aig")
-dataList = NodePath("HBoxContainer/VBoxContainer/DataList")
+dataList = NodePath("HBoxContainer/PanelContainer/VBoxContainer/DataList")
 saveButton = NodePath("PanelContainer/HBoxContainer2/Save")
 saveAsButton = NodePath("PanelContainer/HBoxContainer2/SaveAs")
 newButton = NodePath("PanelContainer/HBoxContainer2/New")
-deleteButton = NodePath("HBoxContainer/VBoxContainer/PanelContainer/HBoxContainer/Delete")
-newFolderButton = NodePath("HBoxContainer/VBoxContainer/PanelContainer/HBoxContainer/NewFolder")
-backButton = NodePath("HBoxContainer/VBoxContainer/PanelContainer/HBoxContainer/Back")
+deleteButton = NodePath("HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/Delete")
+newFolderButton = NodePath("HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/NewFolder")
+backButton = NodePath("HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer/Back")
 exitButton = NodePath("PanelContainer/HBoxContainer2/Exit")
 title = NodePath("PanelContainer/HBoxContainer2/Title")
 loaderContainer = NodePath("HBoxContainer/LoaderContainer")
@@ -58,41 +62,44 @@ text = "Exit"
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer"]
 layout_mode = 2
 
-[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer/VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/PanelContainer"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/PanelContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Back" type="Button" parent="HBoxContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="Back" type="Button" parent="HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "Back"
 
-[node name="VSeparator" type="VSeparator" parent="HBoxContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="VSeparator" type="VSeparator" parent="HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="NewFolder" type="Button" parent="HBoxContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="NewFolder" type="Button" parent="HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "New folder"
 
-[node name="Delete" type="Button" parent="HBoxContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="Delete" type="Button" parent="HBoxContainer/PanelContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "Delete
 "
 
-[node name="DataList" type="ItemList" parent="HBoxContainer/VBoxContainer"]
-custom_minimum_size = Vector2(300, 0)
+[node name="HSeparator" type="HSeparator" parent="HBoxContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="DataList" type="ItemList" parent="HBoxContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_5b22l")
 item_count = 2
 fixed_column_width = 18
-fixed_icon_size = Vector2i(30, 30)
+fixed_icon_size = Vector2i(16, 16)
 item_0/text = "Banana"
 item_1/text = "Apple"
 
-[node name="LoaderContainer" type="CenterContainer" parent="HBoxContainer"]
+[node name="LoaderContainer" type="PanelContainer" parent="HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3

@@ -6,9 +6,11 @@ using System.Linq;
 public abstract partial class AGameDataLoader : Node
 {
     public abstract string DataFolder { get; }
-    protected abstract Dictionary<string, ISerializableData> gameDatas { get; }
-    protected abstract Dictionary<string, Sprite2D> sprites { get; }
+    protected abstract List<AGameDataPart> gameDatas { get; }
     protected virtual string iconKey => "";
+
+    private List<AGameDataPart> _gameDatas = null;
+    private List<AGameDataPart> loadedGameDatas => _gameDatas ??= gameDatas;
     public bool Visible
     {
         set
@@ -38,29 +40,7 @@ public abstract partial class AGameDataLoader : Node
             return;
         }
         string folderPath = this.GetFolderPath(name, folder, false);
-        foreach (var gameData in gameDatas)
-        {
-            using var file = FileAccess.Open(folderPath + FileSystem.SEPERATOR + gameData.Key + ".json", FileAccess.ModeFlags.Read);
-            if (file != null)
-            {
-                gameData.Value.Load(file.GetAsText());
-            }
-            else
-            {
-                gameData.Value.Clear();
-            }
-        }
-        foreach (var sprite in sprites)
-        {
-            if (FileAccess.FileExists(folderPath + FileSystem.SEPERATOR + sprite.Key + ".png"))
-            {
-                sprite.Value.Texture = ImageTexture.CreateFromImage(Image.LoadFromFile(folderPath + FileSystem.SEPERATOR + sprite.Key + ".png"));
-            }
-            else
-            {
-                sprite.Value.Texture = new Texture2D();
-            }
-        }
+        loadedGameDatas.ForEach(a => a.Load(folderPath));
         EmitSignal(SignalName.OnExternalChange);
     }
 
@@ -79,52 +59,26 @@ public abstract partial class AGameDataLoader : Node
 
     private void LoadFromRecord(GameDataPreloader.GameDataRecord record)
     {
-        foreach (var gameData in gameDatas)
-        {
-            gameData.Value.Load(record.GameDatas[gameData.Key]);
-        }
-        foreach (var sprite in sprites)
-        {
-            sprite.Value.Texture = ImageTexture.CreateFromImage(record.Sprites[sprite.Key]);
-        }
+        loadedGameDatas.ForEach(a => a.LoadFromRecord(record.Records.Find(b => b.Item1 == a.Name)));
+        EmitSignal(SignalName.OnExternalChange);
     }
 
     public void Save(string name, string folder)
     {
         string folderPath = this.GetFolderPath(name, folder, true);
-        foreach (var gameData in gameDatas)
-        {
-            using var file = FileAccess.Open(folderPath + FileSystem.SEPERATOR + gameData.Key + ".json", FileAccess.ModeFlags.Write);
-            if (file == null)
-            {
-                throw new Exception("Error creating file " + (folderPath + FileSystem.SEPERATOR + gameData.Key + ".json") + "!");
-            }
-            file.StoreString(gameData.Value.Save());
-        }
-        foreach (var sprite in sprites)
-        {
-            sprite.Value.Texture?.GetImage()?.SavePng(folderPath + FileSystem.SEPERATOR + sprite.Key + ".png");
-        }
+        loadedGameDatas.ForEach(a => a.Save(folderPath));
     }
 
     public GameDataPreloader.GameDataRecord SaveToRecord()
     {
-        GameDataPreloader.GameDataRecord record = new GameDataPreloader.GameDataRecord(new Dictionary<string, string>(), new Dictionary<string, Image>());
-        foreach (var gameData in gameDatas)
-        {
-            record.GameDatas.Add(gameData.Key, gameData.Value.Save());
-        }
-        foreach (var sprite in sprites)
-        {
-            record.Sprites.Add(sprite.Key, sprite.Value.Texture?.GetImage());
-        }
+        GameDataPreloader.GameDataRecord record = new GameDataPreloader.GameDataRecord(new List<(string, object)>());
+        loadedGameDatas.ForEach(a => record.Records.Add((a.Name, a.SaveToRecord())));
         return record;
     }
 
     public void New()
     {
-        gameDatas.Values.ToList().ForEach(a => a.Clear());
-        sprites.Values.ToList().ForEach(a => a.Texture = new Texture2D());
+        gameDatas.ForEach(a => a.Clear());
         EmitSignal(SignalName.OnExternalChange);
     }
 
@@ -144,8 +98,32 @@ public abstract partial class AGameDataLoader : Node
 
     public T GetData<T>(string key) where T : ISerializableData
     {
-        return gameDatas.ContainsKey(key) ? (gameDatas[key] is T result ? result :
+        GameDataSerializablePart part = GetPart<GameDataSerializablePart>(key);
+        return part != null ? (part.SourceNode is T result ? result :
             throw new Exception("Type mismatch! " + key + " isn't " + typeof(T))) :
             throw new Exception("No key! " + key);
+    }
+
+    public Sprite2D GetSprite(string key)
+    {
+        GameDataSpritePart part = GetPart<GameDataSpritePart>(key);
+        return part?.SourceNode ?? throw new Exception("No key! " + key);
+    }
+
+    public AnimatedSprite2D GetAnimatedSprite(string key)
+    {
+        GameDataAnimatedSpritePart part = GetPart<GameDataAnimatedSpritePart>(key);
+        return part?.SourceNode ?? throw new Exception("No key! " + key);
+    }
+
+    public GameDataAudioStreamPart.StreamWithPath GetAudioStream(string key)
+    {
+        GameDataAudioStreamPart part = GetPart<GameDataAudioStreamPart>(key);
+        return part?.SourceNode ?? throw new Exception("No key! " + key);
+    }
+
+    private T GetPart<T>(string key) where T : AGameDataPart
+    {
+        return (T)loadedGameDatas.Find(a => a is T part && a.Name == key);
     }
 }
